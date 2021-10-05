@@ -27,14 +27,52 @@ if (coin_flip>0.5) {
 ###score calculation function for each sector
 offense_score <- function(possession, sector){
 if (possession==1){
-  N <- length()
-  for (i in 1:N)
+  N <- which(team_1$sector==sector)
+  offense_score1 = 0
+  for (i in N){
+    offense_score1 <- offense_score1 + team_1$offense_score[i]
+  }
+} else {
+  N <- which(team_2$sector==sector)
+  offense_score1 = 0
+  for (i in N){
+    offense_score1 <- offense_score1 + team_2$offense_score[i]
+  }
 }
-
+return(offense_score1)
 }
+#test: offense_score(possession = 1, sector = 2)
 
-
+defense_score <- function(possession, sector){
+  if (possession==2){
+    N <- which(team_1$sector==sector)
+    defense_score1 = 0
+    for (i in N){
+      defense_score1 <- defense_score1 + team_1$defense_score[i]
+    }
+  } else {
+    N <- which(team_2$sector==sector)
+    defense_score1 = 0
+    for (i in N){
+      defense_score1 <- defense_score1 + team_2$defense_score[i]
+    }
+  }
+  return(defense_score1)
+}
+defense_score(possession = 2, sector = 2)
+ball_possession=2
+###2. Defending Team attempts
+off_sum <- offense_score(possession = ball_possession, sector = sector)
+def_sum <- defense_score(possession = ball_possession, sector = sector)
+off_team_roll <- runif(1, min=1, max=off_sum)
+def_team_roll <- runif(1, min=1, max=def_sum)
+if ((def_team_roll>off_team_roll) & (ball_possession==1)) {
+  ball_possession <- 2
+} else if ((def_team_roll>off_team_roll) & (ball_possession==2)) {
+  ball_possession <- 1
+} else ###Next
 ###3. Long Shot calcuation- inputs are sectors and possession
+
 longshot_off_score <- sample(team)
 
 
