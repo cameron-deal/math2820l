@@ -61,6 +61,23 @@ defense_score <- function(possession, sector){
 }
 ###Test: defense_score(possession = 2, sector = 2)
 
+
+###Possession flip function- NEED HELP- just stays stuck on the same values
+possession_flip <- function(possession){
+  if(possession==1) {
+    ball_possession <- 2
+  } else if(possession==2) {
+    ball_possession <- 1
+  }
+}
+ball_possession=1
+possession_flip(possession = as.numeric(ball_possession))
+ball_possession
+possession_flip(possession = as.numeric(ball_possession))
+ball_possession
+
+
+
 ###1. Defending Team attempts
 off_sum <- offense_score(possession = ball_possession, sector = sector)
 def_sum <- defense_score(possession = ball_possession, sector = sector)
