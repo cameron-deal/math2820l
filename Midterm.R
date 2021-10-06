@@ -41,7 +41,7 @@ if (possession==1){
 }
 return(offense_score1)
 }
-#test: offense_score(possession = 1, sector = 2)
+###Test: offense_score(possession = 1, sector = 2)
 
 defense_score <- function(possession, sector){
   if (possession==2){
@@ -59,9 +59,9 @@ defense_score <- function(possession, sector){
   }
   return(defense_score1)
 }
-defense_score(possession = 2, sector = 2)
-ball_possession=2
-###2. Defending Team attempts
+###Test: defense_score(possession = 2, sector = 2)
+
+###1. Defending Team attempts
 off_sum <- offense_score(possession = ball_possession, sector = sector)
 def_sum <- defense_score(possession = ball_possession, sector = sector)
 off_team_roll <- runif(1, min=1, max=off_sum)
@@ -71,7 +71,15 @@ if ((def_team_roll>off_team_roll) & (ball_possession==1)) {
 } else if ((def_team_roll>off_team_roll) & (ball_possession==2)) {
   ball_possession <- 1
 } else ###Next
-###3. Long Shot calcuation- inputs are sectors and possession
+  
+###2. Attacking team moves
+if ((ball_possession==1 & sector=4) | (ball_possession==2 & sector=1)) {
+  close_shot <-1
+}
+if (close_shot==1){
+sector_players <- team_1$offense_score[team_1$sector==sector]
+lst_sample(sector_players, 1, replace = T)
+}
 
 longshot_off_score <- sample(team)
 
