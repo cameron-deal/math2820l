@@ -1,13 +1,13 @@
-#Define probability constants
+#Define probability constants- Cameron
 
-#Define the functions
+#Define the functions- All
 
 #Monte Carlo
 
 #Game Function
 
 
-#flip coin stuff
+#flip coin stuff- Cameron
 
 
 
