@@ -18,9 +18,9 @@ for (i in 1:90){
   #End if successful
 #If in attacking sector 4- Cameron
   #close shot
-#Long shot (attacking sector 3)- Zoe
+#Long shot (attacking sector 3)- Vikram
   #offsides
-#Pass ball forward- Zoe
+#Pass ball forward- Vikram
 }
 
 ##Print score and winner- Zoe
