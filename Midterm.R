@@ -222,7 +222,10 @@ if (ball_possession==1 & sector==4) {
   off_score <- lst_sample(sector_offplayers, 1, replace = T)
   off_team_roll <- runif(1, min=1, max=off_score)
   goalie_roll <- runif(1, min=1, max=7)
+  cat("Player", team_1$player_number[team_1$offense_score==off_score], "from team 1 takes a shot from sector 4.")
   if(off_team_roll>goalie_roll) {
+    ###NEED MINUTE VARIABLE
+    cat("It's a goal on minute", i, "!!! The score is now", team_1$points_score, ":", team_2$points_score)
     team_1$points_score <- team_1$points_score + 1
     #Possession flips and the minute ends
     change <-1
@@ -231,20 +234,25 @@ if (ball_possession==1 & sector==4) {
     #possession flips and the minute ends
     change <-1
     if (change==1) break
+    cat("... and he misses. Team 2 is now in possession")
   }
 } else if (ball_possession==2 & sector==1) {
   sector_offplayers <- team_2$offense_score[team_2$sector==sector]
   off_score <- lst_sample(sector_offplayers, 1, replace = T)
   off_team_roll <- runif(1, min=1, max=off_score)
   goalie_roll <- runif(1, min=1, max=7)
+  cat("Player", team_2$player_number[team_2$offense_score==off_score], "from team 2 takes a shot from sector 1.")
   if(off_team_roll>goalie_roll) {
-    team_1$points_score <- team_1$points_score + 1
+    team_2$points_score <- team_2$points_score + 1
+    cat("It's a goal on minute", i, "!!! The score is now", team_1$points_score, ":", team_2$points_score)
     #Possession flips and the minute ends
     change <-1
     if (change==1) break
+    
   } else {
     #possession flips and the minute ends
     change <-1
     if (change==1) break
+    cat("... and he misses. Team 1 is now in possession")
   }
   } else next
