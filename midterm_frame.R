@@ -12,15 +12,15 @@
 
 
 for (i in 1:90){
-#Goalie possession stuff
+#Goalie possession stuff- Zoe
   
-#Defense tries to take the ball
+#Defense tries to take the ball- Cameron
   #End if successful
-#If in attacking sector 4
+#If in attacking sector 4- Cameron
   #close shot
-#Long shot (attacking sector 3)
+#Long shot (attacking sector 3)- Zoe
   #offsides
-#Pass ball forward
+#Pass ball forward- Zoe
 }
 
-##Print score and winner
+##Print score and winner- Zoe
