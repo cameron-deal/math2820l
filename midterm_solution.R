@@ -29,12 +29,50 @@ game <- function(minutes) {
     game_state <- minute(team_1, team_2, game_state)
   }
 
-  # Print Score and Winner- Zoe
+  # Print Score and Winner
+  cat('End of the match. The score is  ')
+  cat(game_state$score[1], ' : ', game_state$score[2])
+  if (game_state$score[1] == game_state$score[2]){
+    cat('It\'s a draw!')
+  } else if (game_state$score[1] > game_state$score[2]){
+    cat('Team 1 wins!')
+  } else {
+    cat('Team 2 wins!')
+  }
 }
 
 # Simulate 1 minute of a game
 minute <- function(team_1, team_2, game_state) {
-  #Goalie possession stuff- Zoe
+  #Goalie possession stuff
+  if (game_state$goalie_with_ball == TRUE){
+  #pass to sector 2 with probability 0.6
+  goalieKick = runif(1, 0, 1)
+   if (goalieKick <= PASS_TO_SECTOR2_PROB & game_state$team_possession == 1){
+     game_state$ball_in_sector = 2
+   } else if (goalieKick <= PASS_TO_SECTOR2_PROB & game_state$team_possession == 2){
+     game_state$ball_in_sector = 3
+   } else { 
+     #otherwise pass to sector (attacking) 3
+     if (game_state$team_posession == 1){
+       game_state$ball_in_sector = 3
+     } else {
+       game_state$ball_in_sector = 2
+     }
+     #defense tries to overtake ball
+     offense_roll = ruinf(1,1,offense_score(team_1,team_2,game_state))
+     defense_roll = runif(1,1,defense_score(team_1,team_2,game_state))
+     #if sucessfully overtakes ball, change possession
+     if (defense_roll > offense_roll) { 
+        if (game_state$team_possession == 1){
+          game_state$team_possession == 2
+        } else {
+          team_possession == 1
+        }
+      cat('Intercept after the kick, team ', game_state$team_possession,
+          ' is now in possession')
+    }
+  }
+}
   
   #Defense tries to take the ball- Cameron
     #End if successful
