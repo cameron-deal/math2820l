@@ -59,7 +59,7 @@ minute <- function(team_1, team_2, game_state) {
        game_state$ball_in_sector = 2
      }
      #defense tries to overtake ball
-     offense_roll = ruinf(1,1,offense_score(team_1,team_2,game_state))
+     offense_roll = runif(1,1,offense_score(team_1,team_2,game_state))
      defense_roll = runif(1,1,defense_score(team_1,team_2,game_state))
      #if sucessfully overtakes ball, change possession
      if (defense_roll > offense_roll) { 
