@@ -76,7 +76,7 @@ minute <- function(team_1, team_2, game_state) {
           team_possession == 1
         }
       cat('Intercept after the kick, team ', game_state$team_possession,
-          ' is now in possession')
+          ' is now in possession\n')
     }
     }
   }
@@ -103,7 +103,7 @@ minute <- function(team_1, team_2, game_state) {
     off_score <- lst_sample(sector_offplayers, 1, replace = T)
     off_team_roll <- runif(1, min=1, max=off_score)
     goalie_roll <- runif(1, min=1, max=GOALIE_SCORE)
-    cat("Player", team_1$player_number[team_1$offense_score==off_score], "from team 1 takes a shot from sector 4.")
+    cat("Player", team_1$player_number[team_1$offense_score==off_score], "from team 1 takes a shot from sector 4.\n")
   
     if(off_team_roll>goalie_roll) {
       game_state$score[1] <- game_state$score[1] + 1
@@ -114,7 +114,7 @@ minute <- function(team_1, team_2, game_state) {
     } else {
       game_state$team_possession <- 2
       game_state$cur_minute <- game_state$cur_minute + 1
-      cat("... and he misses. Team 2 is now in possession")
+      cat("... and he misses. Team 2 is now in possession\n")
       game_state$goalie_with_ball = TRUE
       game_state$ball_in_sector = 4
       return(game_state)
@@ -125,14 +125,14 @@ minute <- function(team_1, team_2, game_state) {
     off_team_roll <- runif(1, min=1, max=off_score)
     goalie_roll <- runif(1, min=1, max=7)
     
-    cat("Player", team_2$player_number[team_2$offense_score==off_score], "from team 2 takes a shot from sector 1.")
+    cat("Player", team_2$player_number[team_2$offense_score==off_score], "from team 2 takes a shot from sector 1.\n")
     
     if(off_team_roll > goalie_roll) {
       team_2$points_score <- team_2$points_score + 1
-      cat("It's a goal on minute", game_state$cur_min, "!!! The score is now", game_state$score[1], ":", game_state$score[2])
+      cat("It's a goal on minute", game_state$cur_min, "!!! The score is now", game_state$score[1], ":", game_state$score[2], '\n')
     }
     else {
-      cat("... and he misses. Team 2 is now in possession")
+      cat("... and he misses. Team 2 is now in possession \n")
     }
     
     game_state$team_possession <- 1
@@ -157,10 +157,10 @@ minute <- function(team_1, team_2, game_state) {
       
     if (offense_score > defense_score) {
       game_state$score[1] = game_state$score[1] + 1
-      cat('Goal at minute ', game_state$cur_min, '!! The score is now ', game_state$score)
+      cat('Goal at minute ', game_state$cur_min, '!! The score is now ', game_state$score, '\n')
     }
     else {
-      cat("... and he misses. Team 2 is now in possession")
+      cat("... and he misses. Team 2 is now in possession\n")
     }
 
     game_state$goalie_with_ball = TRUE
@@ -180,7 +180,7 @@ minute <- function(team_1, team_2, game_state) {
       if (runif(1,0,1) > OFFSIDE_PROB) {
         # Offside penalty so team 2 gains possession
         game_state$team_possession = 2
-        cat("Team 1  is offsides, team 2 now has the ball")
+        cat("Team 1  is offsides, team 2 now has the ball\n")
       }
     }
     return(game_state)
@@ -189,17 +189,17 @@ minute <- function(team_1, team_2, game_state) {
   # repeat for team 2 
   if (game_state$ball_in_sector == 2 & game_state$team_possession == 2 & runif(1,0,1) <= LONGSHOT_PROB) {
     offensive_player = lst_sample(team_2$player_number[team_1$sector == 2],1,T)
-    cat('Player ',offensive_player,' from team 2 takes a shot from sector 2')
+    cat('Player ',offensive_player,' from team 2 takes a shot from sector 2\n')
     
     offense_score = min(runif(2,1,team_2$offense_score[offense_player]))
     defense_score = runif(1,1,GOALIE_SCORE)
 
     if (offense_score > defense_score) {
       game_state$score[2] = game_state$score[2] + 1
-      cat('Goal at minute ', game_state$cur_min, '!! The score is now ', game_state$score)
+      cat('Goal at minute ', game_state$cur_min, '!! The score is now ', game_state$score,'\n')
     }
     else {
-      cat("... and he misses. Team 1 is now in possession")
+      cat("... and he misses. Team 1 is now in possession\n")
     }
     
     game_state$goalie_with_ball = TRUE
@@ -218,7 +218,7 @@ minute <- function(team_1, team_2, game_state) {
       if (runif(1,0,1) > OFFSIDE_PROB) {
         # Offside penalty so team 2 gains possession
         game_state$team_possession = 2
-        cat("Team 2  is offsides, team 1 now has the ball")
+        cat("Team 2  is offsides, team 1 now has the ball\n")
       }
     }
     return(game_state)
@@ -245,7 +245,7 @@ game <- function(minutes) {
   
   # Print Score and Winner
   cat('End of the match. The score is  ')
-  cat(game_state$score[1], ' : ', game_state$score[2])
+  cat(game_state$score[1], ' : ', game_state$score[2], '. ')
   if (game_state$score[1] == game_state$score[2]){
     cat('It\'s a draw!')
   } else if (game_state$score[1] > game_state$score[2]){
