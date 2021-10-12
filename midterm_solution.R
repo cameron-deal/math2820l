@@ -94,8 +94,8 @@ if ((def_team_roll>off_team_roll) & (game_state$team_possession==1)) {
   
   #If in attacking sector 4- Cameron
     #close shot- CHANGE the possession and sector variables
-  if (ball_possession==1 & sector==4) {
-  sector_offplayers <- team_1$offense_score[team_1$sector==sector]
+  if (game_state$team_possession==1 & game_state$ball_in_sector==4) {
+  sector_offplayers <- team_1$offense_score[team_1$sector==game_state$ball_in_sector]
   off_score <- lst_sample(sector_offplayers, 1, replace = T)
   off_team_roll <- runif(1, min=1, max=off_score)
   goalie_roll <- runif(1, min=1, max=GOALIE_SCORE)
@@ -110,10 +110,12 @@ if ((def_team_roll>off_team_roll) & (game_state$team_possession==1)) {
   game_state$team_possession <- 2
   game_state$cur_minute <- game_state$cur_minute + 1
   cat("... and he misses. Team 2 is now in possession")
+  game_state$goalie_with_ball = TRUE
+  game_state$ball_in_sector = 4
   return(game_state)
   }
-} else if (ball_possession==2 & sector==1) {
-  sector_offplayers <- team_2$offense_score[team_2$sector==sector]
+} else if (game_state$team_possession==2 & game_state$ball_in_sector==1) {
+  sector_offplayers <- team_2$offense_score[team_2$sector==game_state$ball_in_sector]
   off_score <- lst_sample(sector_offplayers, 1, replace = T)
   off_team_roll <- runif(1, min=1, max=off_score)
   goalie_roll <- runif(1, min=1, max=7)
@@ -121,15 +123,16 @@ if ((def_team_roll>off_team_roll) & (game_state$team_possession==1)) {
   if(off_team_roll>goalie_roll) {
     team_2$points_score <- team_2$points_score + 1
     cat("It's a goal on minute", i, "!!! The score is now", team_1$points_score, ":", team_2$points_score)
-    #Possession flips and the minute ends
-    change <-1
-    if (change==1) break
+  game_state$team_possession <- 1
+  game_state$cur_minute <- game_state$cur_minute + 1
+  cat("... and he misses. Team 2 is now in possession")
+  game_state$goalie_with_ball = TRUE
+  game_state$ball_in_sector = 1
+  return(game_state)
     
   } else {
-    #possession flips and the minute ends
-    change <-1
-    if (change==1) break
-    cat("... and he misses. Team 1 is now in possession")
+    if (game_state$possession==1) {game_state$possession==2} else {game_state$possession==1}
+  return(game_state)
   }
   } 
   # Try a long shot
