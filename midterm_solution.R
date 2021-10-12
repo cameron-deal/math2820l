@@ -75,10 +75,60 @@ minute <- function(team_1, team_2, game_state) {
 }
   
   #Defense tries to take the ball- Cameron
-    #End if successful
+  off_sum <- offense_score(possession = ball_possession, sector = sector)
+def_sum <- defense_score(possession = ball_possession, sector = sector)
+off_team_roll <- runif(1, min=1, max=off_sum)
+def_team_roll <- runif(1, min=1, max=def_sum)
+if ((def_team_roll>off_team_roll) & (ball_possession==1)) {
+  ball_possession <- 2
+  change <-1
+  if (change==1) break
+} else if ((def_team_roll>off_team_roll) & (ball_possession==2)) {
+  ball_possession <- 1
+  change <-1
+  if (change==1) break
+} else next
   #If in attacking sector 4- Cameron
     #close shot
-  
+  if (ball_possession==1 & sector==4) {
+  sector_offplayers <- team_1$offense_score[team_1$sector==sector]
+  off_score <- lst_sample(sector_offplayers, 1, replace = T)
+  off_team_roll <- runif(1, min=1, max=off_score)
+  goalie_roll <- runif(1, min=1, max=7)
+  cat("Player", team_1$player_number[team_1$offense_score==off_score], "from team 1 takes a shot from sector 4.")
+  if(off_team_roll>goalie_roll) {
+    ###NEED MINUTE VARIABLE
+    cat("It's a goal on minute", i, "!!! The score is now", team_1$points_score, ":", team_2$points_score)
+    team_1$points_score <- team_1$points_score + 1
+    #Possession flips and the minute ends
+    change <-1
+    if (change==1) break
+  } else {
+    #possession flips and the minute ends
+    change <-1
+    if (change==1) break
+    cat("... and he misses. Team 2 is now in possession")
+  }
+} else if (ball_possession==2 & sector==1) {
+  sector_offplayers <- team_2$offense_score[team_2$sector==sector]
+  off_score <- lst_sample(sector_offplayers, 1, replace = T)
+  off_team_roll <- runif(1, min=1, max=off_score)
+  goalie_roll <- runif(1, min=1, max=7)
+  cat("Player", team_2$player_number[team_2$offense_score==off_score], "from team 2 takes a shot from sector 1.")
+  if(off_team_roll>goalie_roll) {
+    team_2$points_score <- team_2$points_score + 1
+    cat("It's a goal on minute", i, "!!! The score is now", team_1$points_score, ":", team_2$points_score)
+    #Possession flips and the minute ends
+    change <-1
+    if (change==1) break
+    
+  } else {
+    #possession flips and the minute ends
+    change <-1
+    if (change==1) break
+    cat("... and he misses. Team 1 is now in possession")
+  }
+  } else next
   # Try a long shot
   if (game_state$ball_in_sector == 3 & game_state$team_possession == 1 & runif(1,0,1) <= LONGSHOT_PROB) {
     offensive_player = lst_sample(team1$player_number,1,T)
