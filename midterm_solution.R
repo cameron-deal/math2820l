@@ -90,7 +90,7 @@ if ((def_team_roll>off_team_roll) & (game_state$team_possession==1)) {
 } else next
   
   #If in attacking sector 4- Cameron
-    #close shot
+    #close shot- CHANGE the possession and sector variables
   if (ball_possession==1 & sector==4) {
   sector_offplayers <- team_1$offense_score[team_1$sector==sector]
   off_score <- lst_sample(sector_offplayers, 1, replace = T)
