@@ -75,19 +75,20 @@ minute <- function(team_1, team_2, game_state) {
 }
   
   #Defense tries to take the ball- Cameron
-  off_sum <- offense_score(possession = ball_possession, sector = sector)
-def_sum <- defense_score(possession = ball_possession, sector = sector)
+  off_sum <- offense_score(possession = game_state$team_possession, sector = game_state$ball_in_sector)
+def_sum <- defense_score(possession = game_state$team_possession, sector = game_state$ball_in_sector)
 off_team_roll <- runif(1, min=1, max=off_sum)
 def_team_roll <- runif(1, min=1, max=def_sum)
-if ((def_team_roll>off_team_roll) & (ball_possession==1)) {
-  ball_possession <- 2
-  change <-1
-  if (change==1) break
-} else if ((def_team_roll>off_team_roll) & (ball_possession==2)) {
-  ball_possession <- 1
-  change <-1
-  if (change==1) break
+if ((def_team_roll>off_team_roll) & (game_state$team_possession==1)) {
+  game_state$team_possession <- 2
+  game_state$cur_minute <- game_state$cur_minute + 1
+  return(game_state)
+} else if ((def_team_roll>off_team_roll) & (game_state$team_possession==2)) {
+  game_state$team_possession <- 1
+  game_state$cur_minute <- game_state$cur_minute + 1
+  return(game_state)
 } else next
+  
   #If in attacking sector 4- Cameron
     #close shot
   if (ball_possession==1 & sector==4) {
