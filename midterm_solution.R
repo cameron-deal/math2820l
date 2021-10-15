@@ -139,7 +139,6 @@ minute <- function(team_1, team_2, game_state) {
     
   } else {
     game_state$team_possession = 2 - game_state$team_possession
-    return(game_state)
   }
   
   # Try a long shot
