@@ -165,7 +165,7 @@ minute <- function(team_1, team_2, game_state) {
 
     game_state$goalie_with_ball = TRUE
     game_state$team_possession = 2
-    game_state$cur_min = game_state$cur_min + 1
+    game_state$cur_minute = game_state$cur_minute + 1
     game_state$ball_in_sector = 4
     return(game_state)
   }
@@ -204,7 +204,7 @@ minute <- function(team_1, team_2, game_state) {
     
     game_state$goalie_with_ball = TRUE
     game_state$team_possession = 1
-    game_state$cur_min = game_state$cur_min + 1
+    game_state$cur_minute = game_state$cur_minute + 1
     game_state$ball_in_sector = 1
     return(game_state)
   }
