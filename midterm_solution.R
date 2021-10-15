@@ -70,11 +70,7 @@ minute <- function(team_1, team_2, game_state) {
      defense_roll = runif(1,1,defense_score(team_1,team_2,game_state))
      #if successfully overtakes ball, change possession
      if (defense_roll > offense_roll) { 
-        if (game_state$team_possession == 1){
-          game_state$team_possession == 2
-        } else {
-          team_possession == 1
-        }
+      game_state$team_possession = 2 - game_state$team_possession
       cat('Intercept after the kick, team ', game_state$team_possession,
           ' is now in possession\n')
     }
@@ -142,7 +138,7 @@ minute <- function(team_1, team_2, game_state) {
     return(game_state)
     
   } else {
-    if (game_state$team_possession==1) {game_state$team_possession==2} else {game_state$team_possession==1}
+    game_state$team_possession = 2 - game_state$team_possession
     return(game_state)
   }
   
