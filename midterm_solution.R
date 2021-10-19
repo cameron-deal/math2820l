@@ -125,7 +125,7 @@ minute <- function(team_1, team_2, game_state) {
     
     if(off_team_roll > goalie_roll) {
       team_2$points_score <- team_2$points_score + 1
-      cat("It's a goal on minute", game_state$cur_min, "!!! The score is now", game_state$score[1], ":", game_state$score[2], '\n')
+      cat("It's a goal on minute", game_state$cur_minute, "!!! The score is now", game_state$score[1], ":", game_state$score[2], '\n')
     }
     else {
       cat("... and he misses. Team 2 is now in possession \n")
@@ -152,7 +152,7 @@ minute <- function(team_1, team_2, game_state) {
       
     if (offense_score > defense_score) {
       game_state$score[1] = game_state$score[1] + 1
-      cat('Goal at minute ', game_state$cur_min, '!! The score is now ', game_state$score, '\n')
+      cat('Goal at minute ', game_state$cur_minute, '!! The score is now ', game_state$score, '\n')
     }
     else {
       cat("... and he misses. Team 2 is now in possession\n")
@@ -191,7 +191,7 @@ minute <- function(team_1, team_2, game_state) {
 
     if (offense_score > defense_score) {
       game_state$score[2] = game_state$score[2] + 1
-      cat('Goal at minute ', game_state$cur_min, '!! The score is now ', game_state$score,'\n')
+      cat('Goal at minute ', game_state$cur_minute, '!! The score is now ', game_state$score,'\n')
     }
     else {
       cat("... and he misses. Team 1 is now in possession\n")
