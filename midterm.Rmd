@@ -57,11 +57,9 @@ Below we define the `minute` function to simulate 1 minute of the game. This is 
 ``` {r}
 minute <- function(team_1, team_2, game_state) {
   game_state$cur_minute = game_state$cur_minute + 1
-  #cat("\nMinute", game_state$cur_minute, ": ")
-  #cat(" Team Possession: ", game_state$team_possession, " ")
-  #cat(" Ball_in_sector: ", game_state$ball_in_sector, " ")
+
   #Goalie possession stuff
-  if (game_state$goalie_with_ball == TRUE){
+  if (game_state$goalie_with_ball){
     #pass to sector 2 with probability 0.6
     goalieKick = runif(1, 0, 1)
     if (goalieKick <= PASS_TO_SECTOR2_PROB & game_state$team_possession == 1){
@@ -90,20 +88,20 @@ minute <- function(team_1, team_2, game_state) {
     game_state$goalie_with_ball = FALSE
   }
   
-  #Defense tries to take the ball- Cameron
+  #Defense tries to take the ball
   off_sum <- offense_score(team_1,team_2,game_state)
   def_sum <- defense_score(team_1,team_2,game_state)
-  #cat("off_sum = ", off_sum, "; def_sum = ", def_sum, "\n")
+
   off_team_roll <- runif(1, min=1, max=off_sum)
   def_team_roll <- runif(1, min=1, max=def_sum)
-  #cat("off_team_roll = ", off_team_roll, "; def_team_roll = ", def_team_roll, "\n")
+
   if (def_team_roll>off_team_roll){
     game_state$team_possession = 3 - game_state$team_possession
     return(game_state)
   } 
 
   
-  #If in attacking sector 4- Cameron
+  #If in attacking sector 4
   #close shot- CHANGE the possession and sector variables
   if (game_state$team_possession==1 & game_state$ball_in_sector==4) {
     sector_offplayers <- team_1$offense_score[team_1$sector==game_state$ball_in_sector]
@@ -116,16 +114,15 @@ minute <- function(team_1, team_2, game_state) {
       game_state$score[1] <- game_state$score[1] + 1
       cat("It's a goal on minute", game_state$cur_minute, "!!! The score is now", game_state$score[1], ":", game_state$score[2], '\n')
       game_state$team_possession <- 2
-      #game_state$cur_minute <- game_state$cur_minute + 1
-      return(game_state)
+
+      
     } else {
       game_state$team_possession <- 2
-      #game_state$cur_minute <- game_state$cur_minute + 1
       cat("... and he misses. Team 2 is now in possession\n")
-      game_state$goalie_with_ball = TRUE
-      game_state$ball_in_sector = 4
-      return(game_state)
     }
+    game_state$goalie_with_ball = TRUE
+    game_state$ball_in_sector = 4
+    return(game_state)
   } 
   
   if (game_state$team_possession==2 & game_state$ball_in_sector==1) {
@@ -145,17 +142,11 @@ minute <- function(team_1, team_2, game_state) {
     }
     
     game_state$team_possession <- 1
-    #game_state$cur_minute <- game_state$cur_minute + 1
     game_state$goalie_with_ball = TRUE
     game_state$ball_in_sector = 1
     return(game_state)
     
   } 
-  #else {
-   # if (game_state$team_possession==1) {game_state$team_possession==2} 
-   # else {game_state$team_possession==1}
-    #return(game_state)
-  #}
   
   # Try a long shot
   if (game_state$ball_in_sector == 3 & game_state$team_possession == 1 
@@ -169,7 +160,7 @@ minute <- function(team_1, team_2, game_state) {
       
     if (offense_score > defense_score) {
       game_state$score[1] = game_state$score[1] + 1
-      cat("It's a goal at minute ", game_state$cur_minute, '!!! The score is now ', game_state$score, '\n')
+      cat("It's a goal at minute ", game_state$cur_minute, "!!! The score is now ", game_state$score[1], ":", game_state$score[2], "\n")
     }
     else {
       cat("... and he misses. Team 2 is now in possession\n")
@@ -184,7 +175,6 @@ minute <- function(team_1, team_2, game_state) {
   else if (game_state$team_possession == 1) {
     offense_roll = runif(1,1,offense_score(team_1,team_2,game_state))
     defense_roll = runif(1,1,defense_score(team_1,team_2,game_state))
-    #cat("offense_roll: ", offense_roll, ";defense_roll: ", defense_roll, '\n')
       
     if (offense_roll > defense_roll) {
       if (game_state$ball_in_sector == 3 & runif(1,0,1) <= OFFSIDE_PROB) {
@@ -211,7 +201,7 @@ minute <- function(team_1, team_2, game_state) {
 
     if (offense_score > defense_score) {
       game_state$score[2] = game_state$score[2] + 1
-      cat('Goal at minute ', game_state$cur_minute, '!! The score is now ', game_state$score, '\n')
+      cat('Goal at minute ', game_state$cur_minute, '!!! The score is now ', game_state$score[1], ":", game_state$score[2], '\n')
     }
     else {
       cat("... and he misses. Team 1 is now in possession\n")
@@ -219,14 +209,12 @@ minute <- function(team_1, team_2, game_state) {
     
     game_state$goalie_with_ball = TRUE
     game_state$team_possession = 1
-    #game_state$cur_minute = game_state$cur_minute + 1
     game_state$ball_in_sector = 1
     return(game_state)
   }
   else if(game_state$team_possession == 2) {
     offense_roll = runif(1,1,offense_score(team_1,team_2,game_state))
     defense_roll = runif(1,1,defense_score(team_1,team_2,game_state))
-    #cat("offense_roll= ", offense_roll, ";defense_roll= ", defense_roll, " ")
     
     if (offense_roll > defense_roll) {
       if (game_state$ball_in_sector == 2 & runif(1,0,1) <= OFFSIDE_PROB) {
@@ -253,17 +241,19 @@ game <- function(minutes) {
   # Flip a coin to determine initial game state
   if (runif(1, min=0, max=1) > 0.5) {
     game_state <- list("team_possession"=1, "ball_in_sector"=2, "score"=c(0,0), "cur_minute"=0, "goalie_with_ball"=FALSE)
+    cat("Team 1 wins the coin\n\n")
   } else {
     game_state <- list("team_possession"=2, "ball_in_sector"=3, "score"=c(0,0), "cur_minute"=0, "goalie_with_ball"=FALSE)
+    cat("Team 2 wins the coin\n\n")
   }
   
-  for (i in 0:minutes) {
+  for (i in 0:(minutes - 1)) {
     # simulates a minute of gameplay and updates the game's state accordingly
     game_state <- minute(team_1, team_2, game_state)
   }
   
   # Print Score and Winner
-  cat('End of the match. The score is  ')
+  cat('\n\nEnd of the match. The score is  ')
   cat(game_state$score[1], ' : ', game_state$score[2], "\n")
   if (game_state$score[1] == game_state$score[2]){
     cat('It\'s a draw!')
