@@ -4,7 +4,14 @@ output: html_document
 ---
 By: Cameron, Vikram, and Zoe
 
-```{r}
+- intro (vikram)
+- maps (zoe)
+- other regression using urb code (vikram)
+- regression interpretations (cameron)
+- coeff plot (cameron)
+- causal limitations (vikram)
+
+```{r, warning=FALSE, message=FALSE}
 #Load in Data and Libraries
 library(ggplot2)
 library(sjPlot)
