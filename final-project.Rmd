@@ -8,14 +8,25 @@ By: Cameron Deal, Vikram Meyer, and Zoe Luther
 
 Deciding where to live is a big decision with many big factors involved such as job location and family location. However, there are also smaller factors that play a role such as the availability of natural amenities including bodies of water, parks, mountains, and average temperature throughout the year. Given that small factors such as the availability of natural amenities can play a role in people's decisions, the goal of this project is to provide statistical estimates on the places to live with the best availability of natural amenities. We are also interested in the relationship between urban density and natural amenities, as well as urban density's mediating impact on the natural amenities scores of census divisions.
 
+The questions we have:
+- How is US Census Region associated with average natural amenities scores?
+
+- Are more urban or rural counties more likely to have higher natural amenities scores?
+
 Here are the proposed hypotheses:
 
 - H1: Counties in the Mountain and Pacific Census regions will have higher natural amenities scores given the frequency of national parks and other sites in these areas. The Midwest will have the lowest given the lack of associated natural beauty.
 
 - H2: Urban counties will have higher natural amenities scores, as more people have chosen to live there given the environmental qualities of the region.
 
+Our approach:
+
+- To test H1, we will construct mean natural amenity scores for each of the Census region by using linear regression with the natural amenities score as the dependent variable and census region as the independent variable. Urban density will be added as a control to account for one potential source of bias.
+
+- To test H2, we will use the same linear regression, instead regarding the urban-rural score as the explanatory variable and census region as a control. 
 
 ## Data Exploration
+The USDA dataset being used: https://www.ers.usda.gov/data-products/natural-amenities-scale/
 
 ```{r, warning=FALSE, message=FALSE}
 #Load in Data and Libraries
