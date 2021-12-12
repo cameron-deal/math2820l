@@ -1,8 +1,10 @@
 ---
-title: "Final Project"
+title: "Final Project: Natural Amenities in the US"
 output: html_document
 ---
-By: Cameron, Vikram, and Zoe
+By: Cameron Deal, Vikram Meyer, and Zoe Luther
+
+## Introduction
 
 Deciding where to live is a big decision with many big factors involved such as job location and family location. However, there are also smaller factors that play a role such as the availability of natural amenities including bodies of water, parks, mountains, and average temperature throughout the year. Given that small factors such as the availability of natural amenities can play a role in people's decisions, the goal of this project is to provide statistical estimates on the places to live with the best availability of natural amenities. We are also interested in the relationship between urban density and natural amenities, as well as urban density's mediating impact on the natural amenities scores of census divisions.
 
@@ -12,6 +14,8 @@ Here are the proposed hypotheses:
 
 - H2: Urban counties will have higher natural amenities scores, as more people have chosen to live there given the environmental qualities of the region.
 
+
+## Data Exploration
 
 ```{r, warning=FALSE, message=FALSE}
 #Load in Data and Libraries
@@ -51,7 +55,7 @@ amenities_data$state <- as.factor(amenities_data$state)
 ```
 The natural amenities scale data offers a measure of the geographical and physical qualities of a county that may make it desirable as a place to live.  First, we loaded the data we needed from a csv file and used several commands to clean up the data. 
 
-## Independent Variables
+### Independent Variables
 
 Census Divisions: The US Census Bureau divides the country into nine regions that are geographically contiguous. We labelled the census division variable and converted it to a factor variable from a numeric variable.
 
@@ -59,14 +63,15 @@ Rural-Urban Continuum Code: This measure, which ranges from 0 (most urban) to 9 
 
 Auxiliary Variables: We converted the state identifiers to a factor variable from a string variable, allowing for easier comparisons. Our other variables of interest were primarily numeric, so we did not alter them.
 
-## Dependent Variables
+### Dependent Variables
 
 Natural Amenities Scale: The scale is constructed through six measures: warm winter, winter sun, temperate summer, low summer humidity, topographic variation, and water area. It is standardized around 0, with a standard deviation of 1 and ranges from -6.40 to 11.17 in this dataset.
 
 
+### Visualizations
 First, we use the graphic capabilities of R to visualize some of the contributing factors to the natural amenities score.
 
-To contextualize the census divisions in question, the following map diagrams the geographic breakdown of each of the 9 regions of the continental US. The dataset we used did not include data from Alaska nor Hawaii so those states are omitted from our graphical interpretations.  
+To contextualize the census divisions in question, the following map diagrams the geographic breakdown of each of the 9 regions of the continental US. The dataset we used did not include data from Alaska and Hawaii so those states are omitted from our graphical interpretations.  
 ```{r}
 
 amenities_data = amenities_data %>% 
@@ -86,7 +91,7 @@ label_color = "black"
 ) + labs(title = "Census Divisions")
 ```
 
-The map below depicts each state's quantity of water area (scaled logarithmically) which is one of several factors that compose the overall natural amenities score. As one may anticipate, the coastal states and those with proximity to the Great Lakes exhibit significantly larger water_area values, and thus aligning with the expectation that coastal areas would exhibit higher natural amenities scores. 
+The map below depicts each state's quantity of water area (logarithmic scaling) which is one of several factors that compose the overall natural amenities score. As one may anticipate, the coastal states and those with proximity to the Great Lakes exhibit significantly larger `water_area` values, thus aligning with the expectation that coastal areas would exhibit higher natural amenities scores. 
 ```{r}
 county_level_water_data = map_with_data(amenities_data, values = "water_area_log", na=NA)
 county_level_water_data_WATER = dplyr::select(county_level_water_data, state, water_area_log)
@@ -106,7 +111,7 @@ label_color = "grey"
 
 ```
 
-The following map displays the county-level data on the rural-ness of the area (a higher score on the Rural/Urban Scale indicates a more rural region). The darker (more urban) regions in the graph unsurprisingly align with more coastal regions and are skewed toward the Eastern United States. When evaluating the relationship between the rural-ness of a region and its natural amenities score, the relationship is more ambiguous than a simple causal link (as discussed in more detail above). We can observe an association between certain coastal regions and higher urban density while also observing that the natural beauty of more rural Mid-Western areas is associated with a lower urban density.
+The following map displays the county-level data on the rural-ness of the area (a higher score on the Rural/Urban Scale indicates a more rural region). The darker (more urban) regions in the graph unsurprisingly align with more coastal regions and are skewed toward the Eastern United States. When evaluating the relationship between the rural-ness of a region and its natural amenities score, the relationship is more ambiguous than a simple causal link. We can observe an association between certain coastal regions and higher urban density while also observing that the natural beauty of more rural Mid-Western areas is associated with a lower urban density.
 ```{r}
 county_level_urban_data = map_with_data(amenities_data, values = "rural_urban", na=NA)
 county_level_urban_data_RURAL = dplyr::select(county_level_urban_data, fips, rural_urban)
@@ -163,26 +168,21 @@ color = "white"
   ) + theme(legend.position = "right")  + labs(title = "Amenities Score by County")
 ```
 
+## Analysis & Interpretation
 
 ```{r}
-###Hypothesis 1
-
-#Unadjusted Means for each region
+# Unadjusted Means for each region
 division_means <- summaryBy(scale  ~ cens_div, data=amenities_data , FUN=c(mean), na.rm=TRUE)
 
-#Graph
 ggplot(data=division_means, aes(x=cens_div, y=scale.mean, fill=cens_div)) + geom_bar(stat = "identity") + theme(axis.text.x = element_text(angle = 45, hjust = 1)) + xlab("Census Division") + ylab("Scaled Mean") + ggtitle("Mean Amenities Score, by Census Division")
 ```
 
-First, we constructed a set of mean scores for each census division and displayed the findings visually in a bar graph. We see that, on average, the highest scoring census divisions are Mountain and Pacific, and the lowest scoring census divisions are the East North Central and West North Central. These suggest that the Western United States is the region of the country with the highest natural amenities, while the Midwest has the lowest natural amenities. We explore these patterns further through a regression analyses
+First, we constructed a set of mean scores for each census division and displayed the findings visually in a bar graph. We see that, on average, the highest scoring census divisions are Mountain and Pacific, and the lowest scoring census divisions are the East North Central and West North Central. These findings suggest that the Western United States is the region of the country with the highest natural amenities, while the Midwest has the lowest natural amenities. We explore these patterns further through a regression analysis.
 ```{r}
-
-#Model 1
 model1 <- lm(scale ~ cens_div + rural_urban, data=amenities_data)
 tab_model(model1, show.se=TRUE, digits = 3)
-
 ```
-Model 1 examines the natural amenities scale as the dependent variable and examines the role of census division while adjsuting for urban density through the inclusion of the urban-rural scale as a control variable. New England is the omitted reference group. While controlling for urban density, four regions scored significantly lower than New England on the natural amenities scale: Middle Atlantic ($\beta$=-0.98; 95% CI=(-1.41,-0.55)), East North Central ($\beta$=-2.48; 95% CI=(-2.88,-2.10)), West North Central ($\beta$=-2.21; 95% CI=(-2.59,-1.83)), and East South Central ($\beta$=-0.76; 95% CI=(-1.15,-0.37)). Additionally, there were two regions that scored significantly better than New England while controlling for urban density: Mountain ($\beta$=2.49; 95% CI=(2.09,2.89)), and Pacific ($\beta$=4.13; 95% CI=(3.70,4.57)). These confirm the patterns suggested by the descriptive statistics above; the Western United States enjoys considerably higher natural amenities than the Midwest and more central regions of the country.
+Model 1 examines the natural amenities scale as the dependent variable and examines the role of census division while adjsuting for urban density through the inclusion of the urban-rural scale as a control variable. New England is the omitted reference group. While controlling for urban density, four regions scored significantly lower than New England on the natural amenities scale: Middle Atlantic ($\beta$=-0.98; 95% CI=(-1.41,-0.55)), East North Central ($\beta$=-2.48; 95% CI=(-2.88,-2.10)), West North Central ($\beta$=-2.21; 95% CI=(-2.59,-1.83)), and East South Central ($\beta$=-0.76; 95% CI=(-1.15,-0.37)). Additionally, there were two regions that scored significantly better than New England while controlling for urban density: Mountain ($\beta$=2.49; 95% CI=(2.09,2.89)), and Pacific ($\beta$=4.13; 95% CI=(3.70,4.57)). These findings confirm the patterns suggested by the descriptive statistics above; the Western United States enjoys considerably higher natural amenities than the Midwest and more central regions of the country.
 
 Additionally, we were interested in the association between rural-urban density and natural amenities score. Using a similar model, we examined that relationship while controlling for regional differences through the inclusion of the census division variable as a control. We found that a one-point increase on the rural-urban continuum code (range 0-9) was associated with a 0.037-point decrease in the natural amenities scale (95% CI=(-0.058,-0.017), P-Value<0.001). This suggests that more rural counties tended to have lower natural amenities scores. To be clear, this is not evidence of a causal relation- it is very plausible that natural amenities influence where people live, and in turn urban density, violating the exogeneity necessary to establish causality and raising a potential issue of reverse causality. These relationships are seen in the below Directed Acyclic Graph. However, as a descriptive observation, this association establishes that more rural counties tend to have lower natural amenities in the United States, even when adjusting for regional differences.
 
@@ -193,18 +193,15 @@ dagify(amenity_score  ~~  urban_rural_score,
                   "census_division" = "Census Division",
                   "urban_rural_score" = "Rural/Urban Score")) %>% 
   ggdag(text = FALSE, use_labels = "label", text_size = 3, node_size= 22, label_col = "blue") 
-#model1 <- lm(scale ~ cens_div + rural_urban, data=amenities_data)
+
 model1 <- lm(scale ~ cens_div, data=amenities_data)
 coeffs <- summary(model1)$coefficients
 means_from_lm <-coeffs[1] + c(0, coeffs[2:length(levels(amenities_data$cens_div))])
 
-#Division means, obtained directy, do coincide with those obtained from regression coeffs
-#(as they should) - we've checked for that already, no need to print them out once again
-# division_means    
+# Division means, obtained directy, do coincide with those obtained from regression coeffs (as they should) 
 
 means_from_lm
 
-#Zoe's attempt at controlling for ruran_urban
 model2 <- lm(scale ~ cens_div + rural_urban, data=amenities_data)
 coeffs <- summary(model2)$coefficients
 means_from_lm2 <-coeffs[1] + c(0, coeffs[2:length(levels(amenities_data$cens_div))])
@@ -217,9 +214,9 @@ means_from_lm / means_from_lm2
 means_from_lm2 / means_from_lm
 means_from_lm - means_from_lm2
 
-# One "strange" thing is that means_from_lm2 are all larger than means_from_lm2 - that shouldn't be happening. Let's do a check: weighted (by count) mean of means should equal to overall mean
+# One "strange" thing is that means_from_lm2 are all larger than means_from_lm2 - 
+# that shouldn't be happening. Let's do a check: weighted (by count) mean of means should equal to overall mean
 
-# Note: length won't work with na.rm=TRUE
 division_counts <- summaryBy(scale  ~ cens_div, data=amenities_data , FUN=length)$scale.length
 division_counts
 mean(amenities_data$scale)
@@ -237,7 +234,7 @@ means_from_lm2 = means_from_lm2 + cur * mean(amenities_data$rural_urban)
 sum(means_from_lm2*division_counts) / sum(division_counts) # Now works fine
 
 # All in all, we need to make this amend for computing means straight away,
-# that is, the formula for means from a linear model with control shoul look like 
+# that is, the formula for means from a linear model with control should look like 
 
 means_from_lm2 <- coeffs[1] + 
       c(0, coeffs[2:length(levels(amenities_data$cens_div))]) +
@@ -250,5 +247,4 @@ means_from_lm2 / means_from_lm
 means_from_lm - means_from_lm2
 
 ```
-Once controlling for the urban-rural code, the adjusted means for each census division have changed to varying degrees. These changes are expressed above through the ratios and differences between the adjusted means and the original means. The census division mean for the Middle Atlantic region increased significantly when controlling for the urban-rural continuum (Mean Ratio= 1.317), indicating that this division possesses higher relative natural resource scores once adjusting for urban density. Several others, including New England (MR=0.918), South Atlantic (MR=0.945), and East South Central (MR=0.916), had lower natural resource scores one controlling for urban density.
-
+Once controlling for the urban-rural code, the adjusted means for each census division have changed to varying degrees. These changes are expressed above through the ratios and differences between the adjusted means and the original means. The census division mean for the Middle Atlantic region increased significantly when controlling for the urban-rural continuum (Mean Ratio= 1.317), indicating that this division possesses higher relative natural resource scores once adjusting for urban density. Several others, including New England (MR=0.918), South Atlantic (MR=0.945), and East South Central (MR=0.916), had lower natural resource scores once controlling for urban density.
